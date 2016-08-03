@@ -16,10 +16,12 @@ stepwise_conditional_run = function(data_set,ld_matrix ,p_value_threshold=0.0000
   #hwe_diag = (2*freq_af$af * ( 1- data_set$af) * data_set$n)
   # Extract the effective sample size for a SNP.
   # Generate hwe_diagonal
-  hwe_diag =  (2*data_set$af * ( 1- data_set$af) * data_set$n)
+  hwe_diag =  (2*data_set$af * ( 1- data_set$af) * data_set$n )
+#  hwe_diag =  (2*data_set$af * ( 1- data_set$af) * data_set$n * data_set$info)
   data_set$neff = (var_y * data_set$n) / (hwe_diag *data_set$se^2  - data_set$b) / (data_set$se^2 +1)
   # Remove HWE diagonal
   hwe_diag =  (2*data_set$af * ( 1- data_set$af) * data_set$neff)
+#  hwe_diag =  (2*data_set$af * ( 1- data_set$af) * data_set$neff * data_set$info)  ## ??
   # Get hwe D matrix
 
   # Get hwe D matri x without sample size, needed to generate B matrix.
@@ -37,7 +39,7 @@ stepwise_conditional_run = function(data_set,ld_matrix ,p_value_threshold=0.0000
   current_best_p = 2 * pnorm(abs(conditional_df$Z), lower.tail = F)
   idx_cond = c()
   message(paste("Conditioning ..."))
-  out_all_buts = data.frame(rsid=conditional_df$rsid, beta_old=conditional_df$b, beta_new=NA
+  cond_res = data.frame(rsid=conditional_df$rsid, beta_old=conditional_df$b, beta_new=NA
                             ,se_old=conditional_df$se, se_new =NA,Znew=NA,p=current_best_p)
   while(current_best_p < p_value_threshold){
     idx_cond = c(idx_cond, idx_top_tmp)
